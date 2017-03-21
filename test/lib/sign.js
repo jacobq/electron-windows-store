@@ -4,6 +4,8 @@ const path = require('path')
 const mockery = require('mockery')
 
 const ChildProcessMock = require('../fixtures/child_process')
+const { isValidPublisher, signAppx } = require('../../lib/sign')
+
 
 describe('Sign', () => {
   const cpMock = {
@@ -36,7 +38,7 @@ describe('Sign', () => {
 
       mockery.registerMock('child_process', cpMock)
 
-      require('../../lib/sign').signAppx(programMock)
+      signAppx(programMock)
         .then(() => {
           const expectedScript = path.join(programMock.windowsKit, 'signtool.exe')
           const expectedPfxFile = programMock.devCert
@@ -51,7 +53,36 @@ describe('Sign', () => {
 
     it('should reject if no certificate is present', function () {
       const programMock = {}
-      return require('../../lib/sign').signAppx(programMock).should.be.rejected
+      return signAppx(programMock).should.be.rejected
+    })
+  })
+
+  describe('isValidPublisher()', () => {
+    [{
+      publisher: undefined,
+      expectedReturnValue: false
+    }, {
+      publisher: '',
+      expectedReturnValue: false
+    }, {
+      publisher: 'Not a distinguished name',
+      expectedReturnValue: false
+    }, {
+      publisher: 'CN = Spaces not allowed here',
+      expectedReturnValue: false
+    }, {
+      publisher: 'CN=First Last',
+      expectedReturnValue: true
+    }, {
+      publisher: 'CN=Symantec Class 3 SHA256 Code Signing CA, OU=Symantec Trust Network, O=Symantec Corporation, C=US',
+      expectedReturnValue: true
+    }, {
+      publisher: 'CN=Microsoft Corporation, OU=MOPR, O=Microsoft Corporation, L=Redmond, S=Washington, C=US',
+      expectedReturnValue: true
+    }].forEach((scenario) => {
+      it(`${JSON.stringify(scenario.publisher)} -> ${scenario.expectedReturnValue}`, () => {
+        isValidPublisher(scenario.publisher).should.equal(scenario.expectedReturnValue)
+      })
     })
   })
 })
