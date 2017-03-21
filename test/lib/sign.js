@@ -4,7 +4,7 @@ const path = require('path')
 const mockery = require('mockery')
 
 const ChildProcessMock = require('../fixtures/child_process')
-const { isValidPublisher, signAppx } = require('../../lib/sign')
+const sign = require('../../lib/sign')
 
 
 describe('Sign', () => {
@@ -38,7 +38,7 @@ describe('Sign', () => {
 
       mockery.registerMock('child_process', cpMock)
 
-      signAppx(programMock)
+      sign.signAppx(programMock)
         .then(() => {
           const expectedScript = path.join(programMock.windowsKit, 'signtool.exe')
           const expectedPfxFile = programMock.devCert
@@ -53,7 +53,7 @@ describe('Sign', () => {
 
     it('should reject if no certificate is present', function () {
       const programMock = {}
-      return signAppx(programMock).should.be.rejected
+      return sign.signAppx(programMock).should.be.rejected
     })
   })
 
@@ -81,7 +81,7 @@ describe('Sign', () => {
       expectedReturnValue: true
     }].forEach((scenario) => {
       it(`${JSON.stringify(scenario.publisher)} -> ${scenario.expectedReturnValue}`, () => {
-        isValidPublisher(scenario.publisher).should.equal(scenario.expectedReturnValue)
+        sign.isValidPublisher(scenario.publisher).should.equal(scenario.expectedReturnValue)
       })
     })
   })
