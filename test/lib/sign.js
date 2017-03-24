@@ -74,6 +74,12 @@ describe('Sign', () => {
       publisher: 'CN=First Last',
       expectedReturnValue: true
     }, {
+      publisher: 'CN="First unbalanced',
+      expectedReturnValue: false
+    }, {
+      publisher: 'CN=First, O="Second unbalanced',
+      expectedReturnValue: false
+    }, {
       publisher: 'CN=Symantec Class 3 SHA256 Code Signing CA, OU=Symantec Trust Network, O=Symantec Corporation, C=US',
       expectedReturnValue: true
     }, {
