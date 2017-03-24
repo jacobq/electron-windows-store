@@ -40,6 +40,7 @@
     "inquirer": "^3.0.6",
     "lodash.defaults": "^4.2.0",
     "lodash.merge": "^4.6.0",
+    "lodash.template": "^4.4.0",
     "multiline": "^1.0.2",
     "path-exists": "^3.0.0"
   },
