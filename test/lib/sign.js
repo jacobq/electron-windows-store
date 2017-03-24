@@ -57,7 +57,7 @@ describe('Sign', () => {
     })
   })
 
-  describe('isValidPublisher()', () => {
+  describe('isValidPublisherName()', () => {
     [{
       publisher: undefined,
       expectedReturnValue: false
@@ -81,7 +81,7 @@ describe('Sign', () => {
       expectedReturnValue: true
     }].forEach((scenario) => {
       it(`${JSON.stringify(scenario.publisher)} -> ${scenario.expectedReturnValue}`, () => {
-        sign.isValidPublisher(scenario.publisher).should.equal(scenario.expectedReturnValue)
+        sign.isValidPublisherName(scenario.publisher).should.equal(scenario.expectedReturnValue)
       })
     })
   })
