@@ -69,7 +69,7 @@ describe('Cert', () => {
       'C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64' :
       'C:\\Program Files\\Windows Kits\\10\\bin\\x64';
     const makecertExe = path.join(windowsSdkPath, 'makecert.exe')
-    const pvkFileName = 'bogus-private-key.pkv';
+    const pvkFileName = path.resolve(__dirname, 'bogus-private-key.pkv');
 
     const scenarios = [{
       publisherName: 'CN='
