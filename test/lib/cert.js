@@ -136,7 +136,7 @@ describe('Cert', () => {
         const makecertArgs = ['-r', '-h', '0', '-n', scenario.publisherName, '-eku', '1.3.6.1.5.5.7.3.3', '-pe', '-sv', pvkFileName, crtFileName]
 
         it(`makecert & isValidPublisherName should agree on: ${scenario.publisherName}`, () => {
-          utils.executeChildProcess(makecertExe, makecertArgs)
+          return utils.executeChildProcess(makecertExe, makecertArgs)
           .then((output) => {
             return true
           })
