@@ -133,9 +133,9 @@ describe('Cert', () => {
       if (process.platform === 'win32') {
         const rnd = Date.now() + '-' + Math.floor(Math.random()*10000)
         const crtFileName = path.join(tmpDir, `makecert-${rnd}.crt`)
-        const makecertArgs = ['-r', '-h', '0', '-n', publisherName, '-eku', '1.3.6.1.5.5.7.3.3', '-pe', '-sv', pvkFileName, crtFileName]
+        const makecertArgs = ['-r', '-h', '0', '-n', scenario.publisherName, '-eku', '1.3.6.1.5.5.7.3.3', '-pe', '-sv', pvkFileName, crtFileName]
 
-        it(`makecert & isValidPublisherName should agree on: ${publisherName}`, () => {
+        it(`makecert & isValidPublisherName should agree on: ${scenario.publisherName}`, () => {
           utils.executeChildProcess(makecertExe, makecertArgs)
           .then((output) => {
             return true
