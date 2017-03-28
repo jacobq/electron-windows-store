@@ -5,6 +5,7 @@ const mockery = require('mockery')
 
 const ChildProcessMock = require('../fixtures/child_process')
 const sign = require('../../lib/sign')
+const utils = require('../../lib/utils')
 
 
 describe('Sign', () => {
@@ -54,41 +55,6 @@ describe('Sign', () => {
     it('should reject if no certificate is present', function () {
       const programMock = {}
       return sign.signAppx(programMock).should.be.rejected
-    })
-  })
-
-  describe('isValidPublisherName()', () => {
-    [{
-      publisher: undefined,
-      expectedReturnValue: false
-    }, {
-      publisher: '',
-      expectedReturnValue: false
-    }, {
-      publisher: 'Not a distinguished name',
-      expectedReturnValue: false
-    }, {
-      publisher: 'CN = Spaces not allowed here',
-      expectedReturnValue: false
-    }, {
-      publisher: 'CN=First Last',
-      expectedReturnValue: true
-    }, {
-      publisher: 'CN="First unbalanced',
-      expectedReturnValue: false
-    }, {
-      publisher: 'CN=First, O="Second unbalanced',
-      expectedReturnValue: false
-    }, {
-      publisher: 'CN=Symantec Class 3 SHA256 Code Signing CA, OU=Symantec Trust Network, O=Symantec Corporation, C=US',
-      expectedReturnValue: true
-    }, {
-      publisher: 'CN=Microsoft Corporation, OU=MOPR, O=Microsoft Corporation, L=Redmond, S=Washington, C=US',
-      expectedReturnValue: true
-    }].forEach((scenario) => {
-      it(`${JSON.stringify(scenario.publisher)} -> ${scenario.expectedReturnValue}`, () => {
-        sign.isValidPublisherName(scenario.publisher).should.equal(scenario.expectedReturnValue)
-      })
     })
   })
 })

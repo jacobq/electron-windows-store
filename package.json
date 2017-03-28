@@ -41,7 +41,8 @@
     "lodash.defaults": "^4.2.0",
     "lodash.merge": "^4.6.0",
     "multiline": "^1.0.2",
-    "path-exists": "^3.0.0"
+    "path-exists": "^3.0.0",
+    "rfc2253": "^0.1.1"
   },
   "devDependencies": {
     "chai": "^3.5.0",
