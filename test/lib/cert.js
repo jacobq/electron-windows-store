@@ -135,7 +135,7 @@ describe('Cert', () => {
         const crtFileName = path.join(tmpDir, `makecert-${rnd}.crt`)
         const makecertArgs = ['-r', '-h', '0', '-n', scenario.publisherName, '-eku', '1.3.6.1.5.5.7.3.3', '-pe', '-sv', pvkFileName, crtFileName]
 
-        it(`makecert & isValidPublisherName should agree on: ${scenario.publisherName}`, () => {
+        it(`should agree with makecert.exe on: ${scenario.publisherName}`, () => {
           return utils.executeChildProcess(makecertExe, makecertArgs)
           .then((output) => {
             return true
@@ -143,6 +143,9 @@ describe('Cert', () => {
           // e.g. `Error: CryptCertStrToNameW failed => 0x80092023 (-2146885597)`
           .catch(() => {
             return false
+          }).then((result) => {
+            console.log(`makecert result --> ${result} (for ${scenario.publisherName})`)
+            return result;
           }).should.eventually.equal(actualResult)
         })
       }
