@@ -2,7 +2,7 @@
 
 const path = require('path')
 const mockery = require('mockery')
-const fs = require('fs-extra');
+const fs = require('fs-extra')
 
 const ChildProcessMock = require('../fixtures/child_process')
 const cert = require('../../lib/cert')
@@ -96,7 +96,7 @@ describe('Cert', () => {
     }, {
       publisherName: 'OU=Sales+CN=J. Smith,O=Multi-valued'
     }, {
-      publisherName: 'CN=Duplicate+CN=Definition'
+      publisherName: 'CN=Duplicate+CN=Attribute'
     }, {
       publisherName: 'OU=Trailing plus+',
     }, {
@@ -138,6 +138,9 @@ describe('Cert', () => {
       publisherName: 'CN="Quotation \\" Mark"',
       expectInvalid: true
     }, {
+      publisherName: 'CN=X,DNQ=qualifier',
+	  expectInvalid: true
+    }, {
       // According to RFC1779 and RFC2243 this should be legal but MakeCert.exe does not seem to accept it
       publisherName: 'CN=Sue\\, Grabbit and Runn',
       expectInvalid: true
@@ -145,8 +148,9 @@ describe('Cert', () => {
 
     scenarios.forEach((scenario) => {
       const actualResult = cert.isValidPublisherName(scenario.publisherName)
+	  const nameToPrint = scenario.publisherName.replace(/\n/g, '\\n')
       // Compare pre-determined checks (previously confirmed with makecert.exe)
-      it(`should ${scenario.expectInvalid ? 'fail' : 'pass'} for ${scenario.publisherName}`, () => {
+      it(`return ${scenario.expectInvalid ? 'false' : 'true'} for ${nameToPrint}`, () => {
         actualResult.should.equal(!scenario.expectInvalid, scenario.publisherName)
       })
 
@@ -156,10 +160,9 @@ describe('Cert', () => {
         const crtFileName = path.join(tmpDir, `makecert-${rnd}.crt`)
         const makecertArgs = ['-r', '-h', '0', '-n', scenario.publisherName, '-eku', '1.3.6.1.5.5.7.3.3', '-pe', '-sv', pvkFileName, crtFileName]
 
-        it(`expects makecert.exe to ${scenario.expectInvalid ? 'fail' : 'pass'}: ${scenario.publisherName}`, () => {
+        it(`makecert.exe ${scenario.expectInvalid ? 'fails' : 'succeeds'}: ${nameToPrint}`, () => {
           return utils.executeChildProcess(makecertExe, makecertArgs)
           .then((output) => { return true })
-          // e.g. `Error: CryptCertStrToNameW failed => 0x80092023 (-2146885597)`
           .catch((...args) => { return false })
           .should.eventually.equal(!scenario.expectInvalid)
         })
