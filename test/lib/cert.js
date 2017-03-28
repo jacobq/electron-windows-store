@@ -69,7 +69,9 @@ describe('Cert', () => {
       'C:\\Program Files (x86)\\Windows Kits\\10\\bin\\x64' :
       'C:\\Program Files\\Windows Kits\\10\\bin\\x64';
     const makecertExe = path.join(windowsSdkPath, 'makecert.exe')
-    const pvkFileName = path.resolve(__dirname, 'bogus-private-key.pkv');
+    const pvkFileName = path.resolve(__dirname, 'bogus-private-key.pvk');
+    if (process.platform === 'win32' && !fs.existsSync(pvkFileName))
+      throw new Error(`Could not find private key file to use for makecert.exe tests: ${pvkFileName}`)
 
     const scenarios = [{
       publisherName: 'CN='
@@ -100,7 +102,7 @@ describe('Cert', () => {
     }, {
       publisherName: 'CN=FTAM Service, CN=Bells, OU=Computer Science,\nO=University College London, C=GB'
     }, {
-      publisherName: 'CN=Markus Kuhn, O=University of Erlangen, C=DE'
+      publisherName: 'CN=Markus Kuhn, O=University of Erlangen, T=Mr., C=DE'
     }, {
       publisherName: 'CN=Steve Kille,\n O=ISODE Consortium,\n C=GB'
     }, {
@@ -108,7 +110,14 @@ describe('Cert', () => {
     }, {
       publisherName: 'CN=L. Eagle, O="Sue, Grabbit and Runn", C=GB'
     }, {
+      publisherName: 'O=No CN'
+    }, {
+      publisherName: 'DC=A,CN=B,OU=C,O=D,STREET=123 Main St.,L=Big City,ST=Nowhere,C=XX,SN=Surname,GN=Given name,E=nobody@example.com,S=E,T=F,G=G,I=1.2.3.4'
+    }, {
       publisherName: 'X',
+      expectInvalid: true
+    }, {
+      publisherName: 'CN=X,UID=userId',
       expectInvalid: true
     }, {
       publisherName: 'CN=\ Escaped leading space"',
@@ -137,16 +146,10 @@ describe('Cert', () => {
 
         it(`should agree with makecert.exe on: ${scenario.publisherName}`, () => {
           return utils.executeChildProcess(makecertExe, makecertArgs)
-          .then((output) => {
-            return true
-          })
+          .then((output) => { return true })
           // e.g. `Error: CryptCertStrToNameW failed => 0x80092023 (-2146885597)`
-          .catch(() => {
-            return false
-          }).then((result) => {
-            console.log(`makecert result --> ${result} (for ${scenario.publisherName})`)
-            return result;
-          }).should.eventually.equal(actualResult)
+          .catch((...args) => { return false })
+          .should.eventually.equal(actualResult)
         })
       }
     })

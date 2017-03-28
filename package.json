@@ -7,7 +7,7 @@
     "electron-windows-store": "bin/windowsstore.js"
   },
   "scripts": {
-    "test": "standard \"lib/*.js\" \"bin/**/*.js\" && mocha"
+    "test": "standard \"lib/*.js\" \"test/*.js\" \"bin/**/*.js\" && mocha"
   },
   "repository": {
     "type": "git",
