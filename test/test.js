@@ -10,6 +10,7 @@ global.testing = true
 
 // Run tests
 const assets = require('./lib/assets');
+const convert = require('./lib/convert');
 const deploy = require('./lib/deploy');
 const flatten = require('./lib/flatten');
 const makeappx = require('./lib/makeappx');
